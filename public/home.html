@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Weather App</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <h1>Youtube Downloader</h1>
+        <form class="form-inline" style="margin-bottom: 0.5rem;" onsubmit="return checkWeather(event)">
+            <input type="text" class="form-control" id="city" placeholder="City name"/>
+            <input type="submit" class="btn btn-primary" style="margin-left: 0.5rem;" value="Go!" />
+        </form>
+        <div class="lead" id="condition"></div>
+    </div>
+
+</body>
+<script>
+
+    function checkWeather(e){
+        e.preventDefault();
+        document.getElementById('condition').innerHTML = "<div class='spinner-border' role='status'><span class='sr-only'>Loading...</span></div>"
+        var city = document.getElementById("city").value
+        var URL = "http://api.openweathermap.org/data/2.5/weather?q="+ city +"&appid=e3faa71ef5459b1c6aa0bc2310d46f54"
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        fetch(URL, requestOptions)
+        .then(response => response.text())
+        .then(text => {
+
+            var description = JSON.parse(text).weather[0].description
+
+            document.getElementById('condition').innerHTML = description
+        })
+        .catch(error => {
+            // advancement required
+
+            if (error.message === "Cannot read property '0' of undefined"){
+                document.getElementById('condition').innerHTML = "<div class='alert alert-danger' role='alert'>Try another City name</div>"
+            } else if( error.message === "Failed to fetch") {
+                document.getElementById('condition').innerHTML = "<div class='alert alert-danger' role='alert'>No Internet Connectivity</div>"
+            }
+            
+        });
+    }
+</script>
+</html>
